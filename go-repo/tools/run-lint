@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Pass --fix flag to auto-fix issued warnings.
+
+root="$(dirname "$0")/.."
+
+(
+    cd $root
+    golangci-lint run ./... $@
+)

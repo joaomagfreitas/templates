@@ -1,0 +1,31 @@
+name: Gate (Lint/Test)
+
+on:
+  push:
+    branches-ignore: [master]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "{{ .go_version }}"
+
+      - name: Set up golangci-lint
+        uses: golangci/golangci-lint-action@v8
+
+      - name: Format
+        run: tools/run-format
+
+      - name: Analyze
+        run: tools/run-lint
+
+      - name: Unit test
+        run: tools/run-unit
+
+      - name: Integration test
+        run: tools/run-integration

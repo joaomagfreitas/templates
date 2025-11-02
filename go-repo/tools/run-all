@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+tools="$(dirname "$0")"
+
+(
+    cd $tools
+    set -euxo pipefail
+    ./run-format
+    ./run-lint
+    ./run-unit
+    ./run-integration
+)
