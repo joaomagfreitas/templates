@@ -1,0 +1,17 @@
+{
+    "gopls": {
+        "build.env": {
+            "GOFLAGS": "-tags=integration"
+        }
+    },
+    "go.testFlags": [
+        "-tags=integration"
+    ],
+    "cSpell.customDictionaries": {
+        "spell-check": {
+            "name": "spell-check",
+            "path": "./.vscode/spell-check.txt",
+            "addWords": true
+        }
+    }
+}

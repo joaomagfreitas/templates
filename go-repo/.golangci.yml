@@ -1,0 +1,167 @@
+version: "2"
+run:
+  concurrency: 4
+  go: {{ .go_version }}
+  modules-download-mode: readonly
+  issues-exit-code: 1
+  tests: true
+  allow-parallel-runners: true
+output:
+  formats:
+    text:
+      path: stdout
+      print-linter-name: true
+      print-issued-lines: true
+linters:
+  default: none
+  enable:
+    - decorder
+    - errcheck
+    - errorlint
+    - goconst
+    - godot
+    - godox
+    - gosec
+    - govet
+    - ineffassign
+    - revive
+    - staticcheck
+    - unused
+  settings:
+    decorder:
+      dec-order:
+        - const
+        - var
+        - type
+        - func
+      disable-dec-num-check: true
+      disable-dec-order-check: false
+      disable-init-func-first-check: false
+    errcheck:
+      disable-default-exclusions: true
+      check-type-assertions: true
+      check-blank: true
+      exclude-functions:
+        - (*strings.Builder).WriteString
+        - (*strings.Builder).WriteRune
+    errorlint:
+      errorf: true
+      asserts: true
+      comparison: true
+    goconst:
+      match-constant: true
+      min-len: 2
+      min-occurrences: 3
+      numbers: true
+      min: 2
+      max: 2
+      ignore-calls: false
+      ignore-string-values:
+        - "%v"
+    godot:
+      scope: toplevel
+      exclude:
+        - "^fixme:"
+        - "^todo:"
+      capital: true
+      period: true
+    godox:
+      keywords:
+        - bug
+        - fixme
+    gosec:
+      severity: high
+      confidence: low
+      concurrency: 4
+    govet:
+      enable-all: true
+      disable-all: false
+      settings:
+        printf:
+          funcs:
+            - (github.com/golangci/golangci-lint/pkg/logutils.Log).Infof
+            - (github.com/golangci/golangci-lint/pkg/logutils.Log).Warnf
+            - (github.com/golangci/golangci-lint/pkg/logutils.Log).Errorf
+            - (github.com/golangci/golangci-lint/pkg/logutils.Log).Fatalf
+        shadow:
+          strict: true
+    revive:
+      rules:
+        - name: error-naming
+          severity: warning
+          disabled: false
+        - name: error-return
+          severity: warning
+          disabled: false
+        - name: error-strings
+          severity: warning
+          disabled: false
+        - name: errorf
+          severity: warning
+          disabled: false
+        - name: if-return
+          severity: warning
+          disabled: false
+        - name: increment-decrement
+          severity: warning
+          disabled: false
+        - name: indent-error-flow
+          severity: warning
+          disabled: false
+        - name: max-public-structs
+          arguments:
+            - 16
+          severity: warning
+          disabled: false
+        - name: nested-structs
+          severity: warning
+          disabled: true
+        - name: optimize-operands-order
+          severity: warning
+          disabled: false
+        - name: receiver-naming
+          severity: warning
+          disabled: false
+        - name: redefines-builtin-id
+          severity: warning
+          disabled: false
+        - name: useless-break
+          severity: warning
+          disabled: false
+    tagliatelle:
+      case:
+        rules:
+          json: camel
+          yaml: camel
+        use-field-name: true
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - legacy
+      - std-error-handling
+    rules:
+      - linters:
+          - goconst
+          - errcheck
+          - gosec
+        path: (.+)_test\.go
+    paths:
+      - third_party$
+      - builtin$
+      - examples$
+issues:
+  uniq-by-line: false
+  fix: false
+severity:
+  default: error
+formatters:
+  enable:
+    - gofmt
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

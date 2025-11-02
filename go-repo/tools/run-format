@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+root="$(dirname "$0")/.."
+
+(
+    cd $root
+    if go fmt ./... 2>&1 | tee /dev/stderr | grep -q '^'; then
+        exit 1
+    fi
+)
