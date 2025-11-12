@@ -151,7 +151,7 @@ protection_payload=$(jq -n '{
     checks: [{ context: "lint-and-test", app_id: 15368 }]
   },
   enforce_admins: false,
-  required_pull_request_reviews: null,
+  required_pull_request_reviews: { required_approving_review_count: 0 },
   restrictions: null
 }')
 
