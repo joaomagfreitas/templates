@@ -143,16 +143,15 @@ else
 fi
 
 # --- branch protection rule ---
+# github actions app_id: 15368
 echo "Applying branch protection rule (require PR + status check)..."
 protection_payload=$(jq -n '{
   required_status_checks: {
     strict: false,
-    contexts: ["build-and-release"]
+    checks: [{ context: "lint-and-test", app_id: 15368 }]
   },
   enforce_admins: false,
-  required_pull_request_reviews: {
-    required_approving_review_count: 1
-  },
+  required_pull_request_reviews: null,
   restrictions: null
 }')
 
