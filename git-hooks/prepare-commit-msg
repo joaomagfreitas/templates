@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+#
+# Automatically pre-fills commit messages with the branch base name.
+# Example:
+#   branch: chore/add-tool-vendor
+#   opens editor with: [chore] - 
+#
+# Skips merge and amend commits.
+
+COMMIT_MSG_FILE="$1"
+COMMIT_SOURCE="$2"
+SHA1="$3"
+
+# Skip merge commits
+if [[ "$COMMIT_SOURCE" == "merge" ]]; then
+  exit 0
+fi
+
+# Skip amend commits
+if [[ "$COMMIT_SOURCE" == "commit" && -n "$SHA1" ]]; then
+  exit 0
+fi
+
+# Get current branch name
+branch_name=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
+
+# Skip detached HEAD
+if [[ "$branch_name" == "HEAD" || -z "$branch_name" ]]; then
+  exit 0
+fi
+
+# Extract the base (prefix) before the first slash
+branch_prefix="${branch_name%%/*}"
+
+# Read the first line of the existing message (if any)
+first_line=$(head -n1 "$COMMIT_MSG_FILE" 2>/dev/null)
+
+# Only insert if not already prefixed
+if [[ ! "$first_line" =~ ^\[$branch_prefix\] ]]; then
+  {
+    echo "[$branch_prefix] - "
+    cat "$COMMIT_MSG_FILE"
+  } > "$COMMIT_MSG_FILE.tmp"
+  mv "$COMMIT_MSG_FILE.tmp" "$COMMIT_MSG_FILE"
+fi
+
+exit 0
